@@ -1,5 +1,6 @@
 package com.practice.cheetcode.repository;
 
+import com.practice.cheetcode.entity.Question;
 import com.practice.cheetcode.entity.Sheet;
 import com.practice.cheetcode.entity.SheetQuestion;
 import org.springframework.data.domain.Page;
@@ -24,4 +25,6 @@ public interface SheetQuestionRepository extends JpaRepository<SheetQuestion, Lo
 
 
     Page<SheetQuestion> findBySheetId(long sheetId, Pageable pageable);
+
+    SheetQuestion findBySheetAndQuestion(Sheet sheet, Question question);
 }

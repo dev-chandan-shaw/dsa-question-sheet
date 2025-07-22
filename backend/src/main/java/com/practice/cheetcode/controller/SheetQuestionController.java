@@ -1,6 +1,7 @@
 package com.practice.cheetcode.controller;
 
 
+import com.practice.cheetcode.Exception.BadRequestException;
 import com.practice.cheetcode.Exception.ResourceNotFoundException;
 import com.practice.cheetcode.dto.ApiResponse;
 import com.practice.cheetcode.dto.CreateSheetQuestionRequest;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.security.Principal;
 import java.util.List;
@@ -50,7 +52,12 @@ public class SheetQuestionController {
 
         Question question = questionRepository.findById(req.getQuestionId()).orElseThrow(() -> new ResourceNotFoundException("Question not found!"));
 
-        SheetQuestion sheetQuestion = new SheetQuestion();
+        SheetQuestion sheetQuestion = sheetQuestionRepository.findBySheetAndQuestion(sheet, question);
+        if (sheetQuestion != null) {
+            throw new BadRequestException("Question already exists in this sheet!");
+        }
+
+        sheetQuestion = new SheetQuestion();
         sheetQuestion.setSheet(sheet);
         sheetQuestion.setQuestion(question);
         sheetQuestionRepository.save(sheetQuestion);
